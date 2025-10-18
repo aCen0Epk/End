@@ -9,6 +9,7 @@ use tower_http::trace::TraceLayer;
 use tracing::info;
 
 mod db;
+mod api;
 
 #[tokio::main]
 async fn main() {
@@ -20,8 +21,7 @@ async fn main() {
 
     // build our application with a route
     let app = Router::new()
-        // `GET /` goes to `root`
-        .route("/", get(root))
+        .route("/api/wx_counter/login", post(api::user::login))
         .layer(TraceLayer::new_for_http())
         .with_state(pool);
 
@@ -31,8 +31,5 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-// basic handler that responds with a static string
-async fn root() -> &'static str {
-    "Hello, World!"
-}
+
 
