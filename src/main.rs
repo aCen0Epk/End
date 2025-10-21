@@ -14,6 +14,7 @@ mod api;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
+
     // initialize tracing
     tracing_subscriber::fmt::init();
 
@@ -22,6 +23,7 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/api/wx_counter/login", post(api::user::login))
+        .route("/api/wx_counter/counters", get(api::counter::list))
         .layer(TraceLayer::new_for_http())
         .with_state(pool);
 

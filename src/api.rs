@@ -4,7 +4,7 @@ use crate::api::jwt::AuthError;
 
 mod jwt;
 pub mod user;
-
+pub mod counter;
 
 pub enum ApiError{
     Auth(AuthError),
