@@ -1,10 +1,13 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
+use crate::api::jwt::AuthError;
+
 mod jwt;
 pub mod user;
 
 
 pub enum ApiError{
+    Auth(AuthError),
     Internal(anyhow::Error),
 }
 
@@ -17,6 +20,11 @@ where
     }
 }
 
+impl From<AuthError> for ApiError {
+    fn from(err: AuthError) -> Self {
+        ApiError::Auth((err))
+    }
+}
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> axum::response::Response {

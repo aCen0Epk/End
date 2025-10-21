@@ -6,7 +6,7 @@ use sqlx::{Pool, Sqlite};
 
 use crate::{api::jwt::Claims, db::User};
 
-use super::ApiError;
+use super::{jwt::AuthError, ApiError};
 
 #[derive(Deserialize)]
 pub struct LoginPayload {
@@ -61,9 +61,10 @@ pub async fn login(
     let token = encode(
         &Header::default(), 
         &claims, 
-        &EncodingKey::from_secret("secret"), 
-        )?;
-    Ok(Json(AuthBody::new(token)))
+        &EncodingKey::from_secret(b"secret"), 
+        )
+        .map_err(|_| AuthError::TokenCreation)?;
+        Ok(Json(AuthBody::new(token)))
 }
 
 #[derive(Deserialize, Default)]
