@@ -29,7 +29,7 @@ pub struct Counter {
     pub name:String,
     pub value: i32,
     pub step: i32,
-    pub input_step: i32,
+    pub input_step: bool,
     pub sequence: i32,
     pub created_at: PrimitiveDateTime,
     pub updated_at: PrimitiveDateTime,

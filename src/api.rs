@@ -1,4 +1,5 @@
-use axum::{http::StatusCode, response::IntoResponse};
+use axum::{body, http::StatusCode, response::IntoResponse, Json};
+use serde_json::json;
 
 use crate::api::jwt::AuthError;
 
@@ -7,6 +8,7 @@ pub mod user;
 pub mod counter;
 
 pub enum ApiError{
+    NotFound,
     Auth(AuthError),
     Internal(anyhow::Error),
 }
@@ -28,6 +30,15 @@ impl From<AuthError> for ApiError {
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> axum::response::Response {
-        StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        match self {
+            ApiError::NotFound => (StatusCode::NOT_FOUND).into_response(),
+            ApiError::Auth(err) => err.into_response(),
+            ApiError::Internal(err) => {
+                let body = Json(json!({
+                    "error":err.to_string(),
+                }));
+                (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
+            },
+        }
     }
 }

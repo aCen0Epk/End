@@ -1,6 +1,6 @@
 use axum::{
     http::StatusCode, 
-    routing::{get, post}, 
+    routing::{delete, get, post, put}, 
     Error, Json, Router
 };
 use dotenvy::dotenv;
@@ -24,6 +24,11 @@ async fn main() {
     let app = Router::new()
         .route("/api/wx_counter/login", post(api::user::login))
         .route("/api/wx_counter/counters", get(api::counter::list))
+        .route("/api/wx_counter/counters", post(api::counter::add))
+        .route("/api/wx_counter/counters/:id", get(api::counter::show))
+        .route("/api/wx_counter/counters/:id", put(api::counter::update))
+        .route("/api/wx_counter/counters/:id", delete(api::counter::destroy))
+        .route("/api/wx_counter/counters/:id/top", post(api::counter::top))
         .layer(TraceLayer::new_for_http())
         .with_state(pool);
 
