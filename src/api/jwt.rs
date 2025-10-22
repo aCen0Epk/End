@@ -1,4 +1,3 @@
-// use anyhow::Ok;
 use axum::{
     async_trait, 
     extract::FromRequestParts, 
@@ -11,11 +10,20 @@ use axum_extra::{
     headers::{authorization::Bearer, Authorization},
     TypedHeader,
 };
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{decode, DecodingKey, EncodingKey, Validation};
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::{
+    env,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
+
+pub const KEYS: Lazy<Keys> = Lazy::new(|| {
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
+    Keys::new(secret.as_bytes())
+});
 
 pub struct Keys {
     pub encoding: EncodingKey,
@@ -64,7 +72,7 @@ where
         // Decode the user data
         let token_data = decode::<Claims>(
             bearer.token(), 
-            &DecodingKey::from_secret(b"secret"), 
+            &KEYS.decoding,
             &Validation::default(),
         )
             .map_err(|_| AuthError::InvalidToken)?;

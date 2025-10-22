@@ -1,13 +1,13 @@
 use std::env;
 
 use axum::{extract::State, Json};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{encode, Header};
 use tracing::info;
 use serde_json::Value;
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Sqlite};
 
-use crate::{api::jwt::Claims, db::User};
+use crate::{api::jwt::{Claims, KEYS}, db::User};
 
 use super::{jwt::AuthError, ApiError};
 
@@ -64,7 +64,7 @@ pub async fn login(
     let token = encode(
         &Header::default(), 
         &claims, 
-        &EncodingKey::from_secret(b"secret"), 
+        &KEYS.encoding, 
         )
         .map_err(|_| AuthError::TokenCreation)?;
         Ok(Json(AuthBody::new(token)))
