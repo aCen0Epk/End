@@ -6,6 +6,7 @@ use crate::api::jwt::AuthError;
 mod jwt;
 pub mod user;
 pub mod counter;
+pub mod counter_record;
 
 pub enum ApiError{
     NotFound,

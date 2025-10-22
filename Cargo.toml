@@ -22,3 +22,4 @@ dotenvy = "0.15"
 time = { version = "0.3.31", features = ["serde-human-readable"] }
 anyhow = "1.0"
 jsonwebtoken = "9"
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

@@ -29,6 +29,8 @@ async fn main() {
         .route("/api/wx_counter/counters/:id", put(api::counter::update))
         .route("/api/wx_counter/counters/:id", delete(api::counter::destroy))
         .route("/api/wx_counter/counters/:id/top", post(api::counter::top))
+        .route("/api/wx_counter/counter_records", post(api::counter_record::add),)
+        .route("/api/wx_counter/counter_records/:counter_id", get(api::counter_record::list),)
         .layer(TraceLayer::new_for_http())
         .with_state(pool);
 

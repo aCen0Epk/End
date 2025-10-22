@@ -1,6 +1,9 @@
-// use anyhow::Ok;
+use std::env;
+
 use axum::{extract::State, Json};
 use jsonwebtoken::{encode, EncodingKey, Header};
+use tracing::info;
+use serde_json::Value;
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Sqlite};
 
@@ -73,7 +76,28 @@ struct WxUser {
     pub session_key: String,
 }
 
-// todo
-async fn wx_logic(code:String) -> Result<WxUser, ApiError> {
-    Ok(WxUser::default())
+async fn wx_logic(code:String) -> Result<WxUser, AuthError> {
+    if code.is_empty() {
+        return Err(AuthError::MissingCredentials);
+    }
+
+    let app_id = env::var("APP_ID").unwrap();
+    let app_secret = env::var("APP_SECRET").unwrap();
+    let endpoint = format!("https://api.weixin.qq.com/sns/jscode2session?appid={}&secret={}&js_code={}&grant_type=authorization_code", app_id, app_secret, code);
+
+    let resp = reqwest::get(endpoint)
+        .await
+        .map_err(|_| AuthError::WrongCredentials)?
+        .json::<Value>()
+        .await
+        .map_err(|_| AuthError::WrongCredentials)?;
+    info!("wx_login code: {}, resp: {}", code, resp);
+
+    let wx_user = 
+        serde_json::from_value::<WxUser>(resp).map_err(|_| AuthError::WrongCredentials)?;
+    if wx_user.openid.is_empty() {
+        Err(AuthError::WrongCredentials)
+    } else {
+        Ok(wx_user)
+    }
 }

@@ -1,7 +1,7 @@
 use axum::{extract::{Path, State}, Json};
 use serde::Deserialize;
-use serde_json::json;
-use sqlx::{Pool, Sqlite, Value};
+use serde_json::{json, Value};
+use sqlx::{Pool, Sqlite};
 
 use crate::{api::{counter, user}, db::{User, Counter}};
 
@@ -73,12 +73,6 @@ pub struct UpdatePayload {
     pub step: i32,
     pub input_step: bool,
 }
-
-
-
-
-
-
 
 
 pub async fn update(
