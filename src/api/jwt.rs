@@ -16,6 +16,21 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+
+pub struct Keys {
+    pub encoding: EncodingKey,
+    pub decoding: DecodingKey,
+}
+
+impl Keys {
+    fn new(secret: &[u8]) -> Self {
+        Self { 
+            encoding: EncodingKey::from_secret(secret),
+            decoding: DecodingKey::from_secret(secret), 
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Claims {
     sub: String,

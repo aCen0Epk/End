@@ -384,6 +384,7 @@ dependencies = [
  "env_logger",
  "jsonwebtoken",
  "log",
+ "once_cell",
  "reqwest",
  "serde",
  "serde_json",
