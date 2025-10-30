@@ -1,4 +1,4 @@
-use axum::{body, http::StatusCode, response::IntoResponse, Json};
+use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde_json::json;
 
 use crate::api::jwt::AuthError;
@@ -25,7 +25,7 @@ where
 
 impl From<AuthError> for ApiError {
     fn from(err: AuthError) -> Self {
-        ApiError::Auth((err))
+        ApiError::Auth(err)
     }
 }
 

@@ -3,7 +3,7 @@ use serde::Deserialize;
 use serde_json::{json, Value};
 use sqlx::{Pool, Sqlite};
 
-use crate::{api::{counter::{self, get_user_counter}, user}, db::{Counter, CounterRecord, User}};
+use crate::{api::{counter::get_user_counter}, db::CounterRecord};
 
 use super::{jwt::Uid, ApiError};
 

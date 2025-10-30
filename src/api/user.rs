@@ -35,7 +35,7 @@ impl AuthBody {
 pub async fn login(
     State(pool):State<Pool<Sqlite>>,
     Json(payload):Json<LoginPayload>,
-) -> Result<Json<(AuthBody)>, ApiError> {
+) -> Result<Json<AuthBody>, ApiError> {
     let wx_user = wx_logic(payload.code).await?;
 
     let user = sqlx::query_as::<_, User>("select * from users where openid = ?")
